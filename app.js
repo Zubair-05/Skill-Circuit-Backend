@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 const authRoutes = require('./src/routes/authRoutes');
-// const courseRoutes = require('./src/routes/courseRoutes');
+const courseRoutes = require('./src/routes/courseRoutes');
 // const cartRoutes = require('./src/routes/cartRoutes');
 // const paymentRoutes = require('./src/routes/paymentRoutes');
 // const reviewRoutes = require('./src/routes/reviewRoutes');
@@ -26,7 +26,7 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use(authRoutes);
-// app.use(courseRoutes);
+app.use(courseRoutes);
 // app.use(cartRoutes);
 // app.use(paymentRoutes);
 // app.use(reviewRoutes);

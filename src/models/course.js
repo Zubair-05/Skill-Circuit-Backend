@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const lessonSchema = new mongoose.Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
@@ -16,10 +17,13 @@ const courseSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
+    prerequisites: [{ type: String, required: true }],
+    thingsToLearn : [{ type: String, required: true }],
     teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Module' }],
     status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+    thumbnail: { type: String, required: true },
     publishedAt: { type: Date },
     isPublished: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
