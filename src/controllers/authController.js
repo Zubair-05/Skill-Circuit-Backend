@@ -8,7 +8,7 @@ const googleAuthCallback = (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 3600000 // 1 hour
     });
-    res.redirect('http://localhost:5174/courses');
+    res.redirect('http://localhost:5173/');
 };
 
 const authStatus = (req, res) => {
