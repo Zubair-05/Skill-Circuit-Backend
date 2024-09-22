@@ -5,12 +5,14 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 // Course Management (Instructor)
 router.get('/courses', courseController.getCourses);
-router.post('/courses/create', authenticateToken, courseController.createCourse);
-// router.post('/course/create/content', authenticateToken, courseController.addCourseContent);
-router.post('/course/chapter/create', authenticateToken, courseController.addNewChapter);
-router.post('/course/chapter/add/content', authenticateToken, courseController.addContentInChapter);
 router.get('/course', authenticateToken, courseController.getCourseDetails);
-// router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);
+router.post('/courses/create', authenticateToken, courseController.createCourse);
+router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);
+
+router.get('/chapter/:chapterId', authenticateToken, courseController.getChapterDetails);
+router.post('/course/chapter/create', authenticateToken, courseController.createChapter);
+router.post('/course/chapter/add/content', authenticateToken, courseController.updateChapter);
+router.delete('/course/chapter/delete/:id', authenticateToken, courseController.deleteChapter);
 // router.delete('/courses/:courseId/delete', authenticateToken, courseController.deleteCourse);
 // router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
 //

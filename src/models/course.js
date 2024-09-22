@@ -12,7 +12,8 @@ const moduleSchema = new mongoose.Schema({
     description: { type: String },
     isFree : {type: Boolean, default: false},
     // lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }],
-    course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true }
+    course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+    videoUrl : {type: String},
 });
 
 const courseSchema = new mongoose.Schema({
