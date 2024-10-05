@@ -13,6 +13,11 @@ router.get('/chapter/:chapterId', authenticateToken, courseController.getChapter
 router.post('/course/chapter/create', authenticateToken, courseController.createChapter);
 router.post('/course/chapter/add/content', authenticateToken, courseController.updateChapter);
 router.delete('/course/chapter/delete/:id', authenticateToken, courseController.deleteChapter);
+
+
+//Student side
+router.get('/courses', courseController.getCourses);
+
 // router.delete('/courses/:courseId/delete', authenticateToken, courseController.deleteCourse);
 // router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
 //
