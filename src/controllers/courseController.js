@@ -1,6 +1,6 @@
 const courses = require('../data');
 const {Course} = require('../models/course');
-const User = require('../models/User');
+const User = require('../models/user');
 const {Module} = require("../models/course");
 const {populate} = require("dotenv");
 const getCourses = (req, res) => {
