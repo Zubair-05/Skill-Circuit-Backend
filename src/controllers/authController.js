@@ -1,6 +1,10 @@
 const passport = require('passport');
 
-const googleAuth = passport.authenticate('google', { scope: ['profile', 'email'] });
+const googleAuth = passport.authenticate('google',
+    {
+        scope: ['profile', 'email'],
+        prompt: 'select_account'
+    });
 
 const googleAuthCallback = (req, res) => {
     res.cookie('jwt', req.user.token, {

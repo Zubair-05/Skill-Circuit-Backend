@@ -3,10 +3,11 @@ const {Course} = require('../models/course');
 const User = require('../models/user');
 const {Module} = require("../models/course");
 const {populate} = require("dotenv");
-const getCourses = (req, res) => {
-    console.log('Request has been made to fetch courses');
-    res.status(200).json({success: true, courses});
-};
+
+// const getCourses = (req, res) => {
+//     console.log('Request has been made to fetch courses');
+//     res.status(200).json({success: true, courses});
+// };
 
 const createCourse = async (req, res) => {
 
@@ -146,8 +147,102 @@ const deleteChapter = async (req, res) => {
         return res.status(500).json({message: 'server error'});
     }
 }
+
+// from the view of student
+
+const getAllPublishedCourses = async (req, res) => {
+    try {
+        const courses = await Course.find({ isPublished: true })
+            .select('title price thumbnail isPublished teacher') // Select required fields from Course schema
+            .populate({
+                path: 'teacher',
+                select: 'name profilePicture', // Populate only the name and profilePicture fields from User schema
+            });
+
+        if (!courses) {
+            return res.status(404).json({ message: 'No courses found' });
+        }
+
+        return res.status(200).json({
+            message: 'Courses fetched successfully',
+            courses: courses.map(course => ({
+                title: course.title,
+                price: course.price,
+                thumbnail: `${process.env.S3_BASE_URL}${course.thumbnail}`, // Generate the full URL for the thumbnail
+                teacher: {
+                    name: course.teacher.name,
+                    profilePicture: course.teacher.profilePicture,
+                },
+            })),
+        });
+    } catch (e) {
+        return res.status(500).json({ message: 'Server error', error: e.message });
+    }
+};
+
+const getCourseOverview = async (req, res) => {
+    const { courseId } = req.params;  // Extract courseId from path parameters
+
+    if (!courseId) {
+        return res.status(400).json({ message: 'Course ID is required' });
+    }
+
+    try {
+        const course = await Course.findById(courseId)
+            .select('id title description price category thumbnail prerequisites thingsToLearn teacher modules isPublished publishedAt')
+            .populate({
+                path: 'teacher',
+                select: 'name profilePicture email',
+            })
+            .populate({
+                path: 'modules',
+                select: 'id title description isFree',
+            });
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Generate the full S3 URL for the thumbnail
+        const baseUrl = process.env.S3_BASE_URL;
+        const thumbnail = `${baseUrl}${course.thumbnail}`;
+
+        return res.status(200).json({
+            message: 'Course fetched successfully',
+            course: {
+                id: course._id,
+                title: course.title,
+                description: course.description,
+                price: course.price,
+                category: course.category,
+                prerequisites: course.prerequisites,
+                thingsToLearn: course.thingsToLearn,
+                thumbnail: thumbnail,
+                teacher: {
+                    id: course.teacher._id,
+                    name: course.teacher.name,
+                    profilePicture: course.teacher.profilePicture,
+                    email: course.teacher.email,
+                },
+                modules: course.modules.map(module => ({
+                    id: module._id,
+                    title: module.title,
+                    description: module.description,
+                    isFree: module.isFree,
+                })),
+                isPublished: course.isPublished,
+                publishedAt: course.publishedAt,
+            }
+        });
+    } catch (e) {
+        return res.status(500).json({ message: 'Server error', error: e.message });
+    }
+};
+
+
 module.exports = {
-    getCourses,
+    getAllPublishedCourses,
+    getCourseOverview,
     getCourseDetails,
     createCourse,
     updateCourse,

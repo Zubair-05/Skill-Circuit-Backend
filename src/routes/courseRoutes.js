@@ -4,7 +4,7 @@ const courseController = require('../controllers/courseController');
 const authenticateToken = require('../middlewares/authenticateToken');
 
 // Course Management (Instructor)
-router.get('/courses', courseController.getCourses);
+// router.get('/courses', courseController.getCourses);
 router.get('/course', authenticateToken, courseController.getCourseDetails);
 router.post('/courses/create', authenticateToken, courseController.createCourse);
 router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);
@@ -16,9 +16,10 @@ router.delete('/course/chapter/delete/:id', authenticateToken, courseController.
 
 
 //Student side
-router.get('/courses', courseController.getCourses);
+router.get('/courses',authenticateToken, courseController.getAllPublishedCourses);
+router.get('/courses/:courseId',authenticateToken, courseController.getCourseOverview);
 
-// router.delete('/courses/:courseId/delete', authenticateToken, courseController.deleteCourse);
+
 // router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
 //
 // // Course Enrollment (Student)

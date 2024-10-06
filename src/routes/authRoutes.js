@@ -8,6 +8,7 @@ const passport = require('../config/passport');
 router.get('/auth/google', authController.googleAuth);
 router.get('/auth/google/callback', passport.authenticate('google', { session: false, failureRedirect: '/' }), authController.googleAuthCallback);
 
+
 // Auth status and logout routes
 router.get('/auth/status', authenticateToken, authController.authStatus);
 router.get('/profile', authenticateToken, authController.profile);

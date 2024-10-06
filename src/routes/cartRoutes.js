@@ -5,8 +5,9 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 // Shopping Cart
 router.get('/cart', authenticateToken, cartController.getCart);
-router.post('/cart/add', authenticateToken, cartController.addToCart);
-router.post('/cart/remove', authenticateToken, cartController.removeFromCart);
+router.post('/cart/add/:courseId', authenticateToken, cartController.addToCart);
+router.post('/cart/remove/:courseId', authenticateToken, cartController.removeFromCart);
+router.post('/cart/clear', authenticateToken, cartController.clearCart);
 router.post('/cart/checkout', authenticateToken, cartController.checkoutCart);
 
 module.exports = router;
