@@ -1,21 +1,40 @@
-const Cart = require('../models/cart'); // Assuming Cart model is in the models directory
-const Course = require('../models/course'); // Assuming Course model is in the models directory
+const {Cart} = require('../models/cart'); // Assuming Cart model is in the models directory
+const {Course} = require('../models/course'); // Assuming Course model is in the models directory
 
 // Get Cart Details
 const getCart = async (req, res) => {
+    console.log(req.user.id);
     try {
-        const cart = await Cart.findOne({ user: req.user._id }).populate({
-            path: 'items.course',
-            select: 'title price thumbnail',
-        });
+        const cart = await Cart.findOne({ user: req.user.id })
+            .populate({
+                path: 'items.course',
+                select: 'title price thumbnail teacher',
+                populate: {
+                    path: 'teacher', // Populating the `teacher` field inside `course`
+                    select: 'name profilePicture email',
+                },
+            })
+
 
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
+        const baseUrl = process.env.S3_BASE_URL;
+        // Update the thumbnail paths
+        const updatedItems = cart.items.map((item) => ({
+            ...item.toObject(),
+            course: {
+                ...item.course.toObject(),
+                thumbnail: `${baseUrl}${item.course.thumbnail}`, // Prepend the base URL to the thumbnail path
+            },
+        }));
 
         return res.status(200).json({
             message: 'Cart fetched successfully',
-            cart,
+            cart: {
+                ...cart.toObject(),
+                items: updatedItems, // Use the updated items with full thumbnail paths
+            },
         });
     } catch (error) {
         return res.status(500).json({ message: 'Server error', error: error.message });
@@ -26,15 +45,19 @@ const getCart = async (req, res) => {
 const addToCart = async (req, res) => {
     const { courseId } = req.params;
 
+    if (!courseId) {
+        return res.status(400).json({ message: 'Course ID is required' });
+    }
+
     try {
         const course = await Course.findById(courseId);
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
-
-        let cart = await Cart.findOne({ user: req.user._id });
+        console.log(req.user.id);
+        let cart = await Cart.findOne({ user: req.user.id });
         if (!cart) {
-            cart = new Cart({ user: req.user._id, items: [] });
+            cart = new Cart({ user: req.user.id, items: [] });
         }
 
         // Check if the course already exists in the cart

@@ -45,6 +45,7 @@ const updateCourse = async (req, res) => {
 }
 
 
+
 const createChapter = async (req, res) => {
     try {
         console.log(`got a request for course creation`)
@@ -152,7 +153,7 @@ const deleteChapter = async (req, res) => {
 
 const getAllPublishedCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ isPublished: true })
+        const courses = await Course.find()
             .select('title price thumbnail isPublished teacher') // Select required fields from Course schema
             .populate({
                 path: 'teacher',
@@ -166,6 +167,7 @@ const getAllPublishedCourses = async (req, res) => {
         return res.status(200).json({
             message: 'Courses fetched successfully',
             courses: courses.map(course => ({
+                id : course._id,
                 title: course.title,
                 price: course.price,
                 thumbnail: `${process.env.S3_BASE_URL}${course.thumbnail}`, // Generate the full URL for the thumbnail

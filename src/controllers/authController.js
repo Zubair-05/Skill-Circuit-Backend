@@ -12,7 +12,7 @@ const googleAuthCallback = (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 3600000 // 1 hour
     });
-    res.redirect('http://localhost:5173/');
+    res.redirect(process.env.REDIRECT_URI);
 };
 
 const authStatus = (req, res) => {

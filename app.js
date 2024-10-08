@@ -8,7 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./src/routes/authRoutes');
 const courseRoutes = require('./src/routes/courseRoutes');
 const uploadRoutes = require('./src/routes/uploadToS3Route');
-// const cartRoutes = require('./src/routes/cartRoutes');
+const cartRoutes = require('./src/routes/cartRoutes');
 // const paymentRoutes = require('./src/routes/paymentRoutes');
 // const reviewRoutes = require('./src/routes/reviewRoutes');
 
@@ -19,7 +19,7 @@ app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.REDIRECT_URI,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization'
@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(courseRoutes);
 app.use(uploadRoutes);
-// app.use(cartRoutes);
+app.use(cartRoutes);
 // app.use(paymentRoutes);
 // app.use(reviewRoutes);
 

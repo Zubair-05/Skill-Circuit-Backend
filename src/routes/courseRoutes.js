@@ -4,7 +4,7 @@ const courseController = require('../controllers/courseController');
 const authenticateToken = require('../middlewares/authenticateToken');
 
 // Course Management (Instructor)
-// router.get('/courses', courseController.getCourses);
+// router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
 router.get('/course', authenticateToken, courseController.getCourseDetails);
 router.post('/courses/create', authenticateToken, courseController.createCourse);
 router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);
@@ -20,12 +20,11 @@ router.get('/courses',authenticateToken, courseController.getAllPublishedCourses
 router.get('/courses/:courseId',authenticateToken, courseController.getCourseOverview);
 
 
-// router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
-//
-// // Course Enrollment (Student)
+
+// Course Enrollment (Student)
 // router.post('/courses/:courseId/enroll', authenticateToken, courseController.enrollInCourse);
 // router.get('/enrollments', authenticateToken, courseController.getStudentEnrollments);
-//
+
 // // Course Progress (Optional)
 // router.get('/courses/:courseId/progress', authenticateToken, courseController.getCourseProgress);
 
