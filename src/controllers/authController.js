@@ -9,7 +9,8 @@ const googleAuth = passport.authenticate('google',
 const googleAuthCallback = (req, res) => {
     res.cookie('jwt', req.user.token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
+        sameSite:'None',
         maxAge: 3600000 // 1 hour
     });
     res.redirect(process.env.REDIRECT_URI);
