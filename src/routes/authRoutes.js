@@ -14,4 +14,7 @@ router.get('/auth/status', authenticateToken, authController.authStatus);
 router.get('/profile', authenticateToken, authController.profile);
 router.get('/logout', authController.logout);
 
+// Auth with Email and password
+router.post('/auth/signin', authController.signin);
+router.post('/auth/signup', authController.signup);
 module.exports = router;
