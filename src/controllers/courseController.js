@@ -24,7 +24,8 @@ const createCourse = async (req, res) => {
 }
 
 const updateCourse = async (req, res) => {
-    const {courseId, title, description, category, price, imageUrl, isPublished} = req.body;
+    console.log(req.body);
+    const {courseId, title, description, category, price, imageUrl, isPublished} = req.body.course;
     try {
         const course = await Course.findByIdAndUpdate({
             _id: courseId,
@@ -61,7 +62,7 @@ const createChapter = async (req, res) => {
 const updateChapter = async (req, res) => {
     try {
         const {chapterId, title, description, isFree, videoUrl} = req.body.chapter;
-        console.log(req.body.chapter);
+        console.log(`chapter body is `, req.body.chapter);
         // Find the chapter by id and update the fields
         const updatedChapter = await Module.findByIdAndUpdate(
             chapterId,
@@ -108,6 +109,7 @@ const getCourseDetails = async (req, res) => {
                 path: 'modules',
                 select: 'id title isFree'
             })
+        console.log(course);
         const baseUrl = process.env.S3_BASE_URL;
         const thumbnail = `${baseUrl}${course.thumbnail}`
         return res.status(200).json({
