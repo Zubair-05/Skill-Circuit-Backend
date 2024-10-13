@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
     lastName: { type: String },
     profilePicture: { type: String },
     isInstructor: { type: Boolean, default: false }, // Field to check if the user is also an instructor
+    connectedStripeId: { type: String },
+    stripeConnectLinked: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

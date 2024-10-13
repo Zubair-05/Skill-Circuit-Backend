@@ -9,7 +9,8 @@ const authRoutes = require('./src/routes/authRoutes');
 const courseRoutes = require('./src/routes/courseRoutes');
 const uploadRoutes = require('./src/routes/uploadToS3Route');
 const cartRoutes = require('./src/routes/cartRoutes');
-// const paymentRoutes = require('./src/routes/paymentRoutes');
+const enrollmentRoutes = require('./src/routes/enrollmentRoutes');
+const paymentRoutes = require('./src/routes/paymentRoutes');
 // const reviewRoutes = require('./src/routes/reviewRoutes');
 
 const app = express();
@@ -30,7 +31,8 @@ app.use(authRoutes);
 app.use(courseRoutes);
 app.use(uploadRoutes);
 app.use(cartRoutes);
-// app.use(paymentRoutes);
+app.use(enrollmentRoutes);
+app.use(paymentRoutes);
 // app.use(reviewRoutes);
 
 app.get('/', (req, res) => {

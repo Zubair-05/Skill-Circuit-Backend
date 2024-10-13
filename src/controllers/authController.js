@@ -104,6 +104,8 @@ const profile = (req, res) => {
     res.render('profile');
 }
 
+
+
 // Export all functions at once
 module.exports = {
     signin,
