@@ -8,6 +8,24 @@ const {populate} = require("dotenv");
 //     console.log('Request has been made to fetch courses');
 //     res.status(200).json({success: true, courses});
 // };
+const getInstructorCourses = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        // Fetch all courses where the user is the instructor
+        const courses = await Course.find({ teacher: userId });
+
+        if (!courses || courses.length === 0) {
+            return res.status(404).json({ message: "No courses found for this instructor" });
+        }
+
+        res.status(200).json({ courses });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+
+}
 
 const createCourse = async (req, res) => {
 
@@ -248,6 +266,7 @@ const getCourseOverview = async (req, res) => {
 module.exports = {
     getAllPublishedCourses,
     getCourseOverview,
+    getInstructorCourses,
     getCourseDetails,
     createCourse,
     updateCourse,

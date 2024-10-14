@@ -4,7 +4,7 @@ const courseController = require('../controllers/courseController');
 const authenticateToken = require('../middlewares/authenticateToken');
 
 // Course Management (Instructor)
-// router.get('/instructor/courses', authenticateToken, courseController.getInstructorCourses);
+router.get('/courses/instructor/:userId', authenticateToken, courseController.getInstructorCourses);
 router.get('/course', authenticateToken, courseController.getCourseDetails);
 router.post('/courses/create', authenticateToken, courseController.createCourse);
 router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);

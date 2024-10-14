@@ -11,6 +11,7 @@ router.get('/auth/google/callback', passport.authenticate('google', { session: f
 
 // Auth status and logout routes
 router.get('/auth/status', authenticateToken, authController.authStatus);
+router.get('/stripe/status', authenticateToken, authController.stripeStatus);
 router.get('/profile', authenticateToken, authController.profile);
 router.get('/logout', authController.logout);
 

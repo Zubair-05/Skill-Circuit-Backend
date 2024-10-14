@@ -95,6 +95,21 @@ const authStatus = (req, res) => {
     res.json({ isAuthenticated: true, user: req.user });
 };
 
+const stripeStatus = async (req, res) => {
+    try{
+        console.log(req.user);
+        const user = await User.findOne({ _id: req.user.id });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+        if(user.stripeConnectLinked) return res.json({isActivated:true})
+        else return res.status(200).json({isActivated:false})
+    } catch (err){
+        console.log(err);
+        return res.status(500).json({ message: 'Server error', error: err.message });
+    }
+}
+
 const logout = (req, res) => {
     res.clearCookie('jwt');
     res.status(200).send('User is logged out successfully');
@@ -113,6 +128,7 @@ module.exports = {
     googleAuth,
     googleAuthCallback,
     authStatus,
+    stripeStatus,
     logout,
     profile
 };

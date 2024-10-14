@@ -9,5 +9,6 @@ const authenticateToken = require('../middlewares/authenticateToken');
 
 // Stripe connect
 router.post('/stripe/connect', authenticateToken, paymentController.stripeConnect);
+router.get('/stripe/login/link', authenticateToken, paymentController.stripeDashboardLink);
 
 module.exports = router;
