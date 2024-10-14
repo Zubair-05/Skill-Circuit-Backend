@@ -1,11 +1,12 @@
 const passport = require('passport');
 const User = require('../models/user')
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const googleAuth = passport.authenticate('google',
     {
         scope: ['profile', 'email'],
-        prompt: 'select_account'
+        // prompt: 'select_account'
     });
 
 const googleAuthCallback = (req, res) => {
@@ -19,10 +20,10 @@ const googleAuthCallback = (req, res) => {
 };
 
 const createTokenAndSendAsCookie = (user, res) => {
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Set the token as an HttpOnly cookie
-    res.cookie('token', token, {
+    res.cookie('jwt', token, {
         httpOnly: true,    // Prevents JavaScript access to the cookie
         secure: process.env.NODE_ENV === 'production',  // Ensures it's sent only over HTTPS in production
         sameSite: 'strict', // Prevents CSRF attacks
@@ -56,8 +57,6 @@ const signup = async (req, res) => {
 
         await user.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
         createTokenAndSendAsCookie(user, res);
     } catch (error) {
         console.log(error)
@@ -67,7 +66,7 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(`email : ${ email }, password: ${ password }`);
     if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
     }
