@@ -69,26 +69,33 @@ const stripeWebhooks = async (req, res) => {
             process.env.STRIPE_WEBHOOK_SECRET
         )
     } catch (err){
-        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        console.error('Webhook error:', err.message);
+        return res.status(400).json({ message: 'Webhook error', error: err.message });
     }
-    console.log(event.type);
-    switch (event.type) {
+    console.log(event?.type);
+    switch (event?.type) {
         case "account.updated" : {
             const account = event.data.object;
             console.log(`and the account is`, account);
-            const user = await User.findOneAndUpdate({
-                connectedStripeId: account.id
-            }, {
-                stripeConnectedLinked: !(account.capabilities?.transfers === "pending" ||
+            try{
+                const user = await User.findOneAndUpdate({
+                    connectedStripeId: account.id
+                }, {
+                    stripeConnectLinked: !(account.capabilities?.transfers === "pending" ||
                         account.capabilities?.transfers === "inactive"),
-            })
+                })
+            } catch (err){
+                console.error('Error updating user:', error);
+                return res.status(500).json({ message: 'Error updating user' });
+            }
             break;
         }
         default : {
-            console.log(`unhandled event`);
+            console.log(`Unhandled event type: ${event.type}`);
+            return res.status(200).json({ received: true });
         }
     }
-    res.status(200).json(null);
+    return res.status(200).json({ received: true });
 }
 
 module.exports = {

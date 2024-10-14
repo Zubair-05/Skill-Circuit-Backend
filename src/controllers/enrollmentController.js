@@ -10,6 +10,7 @@ const enrollInCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({message: 'Course does not exist'});
         }
+        const instructor = await User.findOne({_id: course.teacher})
         const session = await stripe.checkout.sessions.create({
             mode:"payment",
             line_items: [
@@ -26,6 +27,12 @@ const enrollInCourse = async (req, res) => {
                     quantity:1,
                 }
             ],
+            payment_intent_data:{
+              application_fee_amount:(Math.round(course.price*100))*0.1,
+              transfer_data:{
+                  destination: instructor.connectedStripeId,
+              }
+            },
             success_url: `${process.env.REDIRECT_URI}/payment/success`,
             cancel_url: `${process.env.REDIRECT_URI}/payment/failure`,
         })
