@@ -9,16 +9,17 @@ router.get('/course', authenticateToken, courseController.getCourseDetails);
 router.post('/courses/create', authenticateToken, courseController.createCourse);
 router.put('/courses/:courseId/update', authenticateToken, courseController.updateCourse);
 
+
 router.get('/chapter/:chapterId', authenticateToken, courseController.getChapterDetails);
 router.post('/course/chapter/create', authenticateToken, courseController.createChapter);
 router.post('/course/chapter/add/content', authenticateToken, courseController.updateChapter);
 router.delete('/course/chapter/delete/:id', authenticateToken, courseController.deleteChapter);
 
-
 //Student side
 router.get('/courses',authenticateToken, courseController.getAllPublishedCourses);
 router.get('/courses/:courseId',authenticateToken, courseController.getCourseOverview);
-
+router.get('/course/purchased', authenticateToken, courseController.getPurchasedCourses);
+router.get('/course/content/:courseId', authenticateToken, courseController.getCourseContent);
 
 
 // Course Enrollment (Student)

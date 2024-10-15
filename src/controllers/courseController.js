@@ -1,8 +1,6 @@
-const courses = require('../data');
 const {Course} = require('../models/course');
-const User = require('../models/user');
 const {Module} = require("../models/course");
-const {populate} = require("dotenv");
+const Enrollment = require('../models/enrollment');
 
 // const getCourses = (req, res) => {
 //     console.log('Request has been made to fetch courses');
@@ -14,7 +12,6 @@ const getInstructorCourses = async (req, res) => {
     try {
         // Fetch all courses where the user is the instructor
         const courses = await Course.find({ teacher: userId });
-
         if (!courses || courses.length === 0) {
             return res.status(404).json({ message: "No courses found for this instructor" });
         }
@@ -205,7 +202,7 @@ const getAllPublishedCourses = async (req, res) => {
 
 const getCourseOverview = async (req, res) => {
     const { courseId } = req.params;  // Extract courseId from path parameters
-
+    const userId = req.user.id;
     if (!courseId) {
         return res.status(400).json({ message: 'Course ID is required' });
     }
@@ -226,6 +223,12 @@ const getCourseOverview = async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });
         }
 
+        const enrollment = await Enrollment.findOne({
+            student: userId,
+            course:courseId
+        })
+        let isEnrolled = true;
+        if(!enrollment) isEnrolled = false;
         // Generate the full S3 URL for the thumbnail
         const baseUrl = process.env.S3_BASE_URL;
         const thumbnail = `${baseUrl}${course.thumbnail}`;
@@ -255,17 +258,91 @@ const getCourseOverview = async (req, res) => {
                 })),
                 isPublished: course.isPublished,
                 publishedAt: course.publishedAt,
-            }
+            },
+            isEnrolled: isEnrolled
         });
     } catch (e) {
         return res.status(500).json({ message: 'Server error', error: e.message });
     }
 };
 
+const getPurchasedCourses = async (req, res) => {
+    const userId = req.user.id;
+    try{
+        const enrollments = await Enrollment.find({ student: userId })
+            .populate('course') // This will populate the course details from the Course model
+            .exec();
+
+        // Extract the courses from the populated enrollments
+        const courses = enrollments.map(enrollment => enrollment.course);
+
+        if (!courses) {
+            return res.status(404).json({ message: 'No courses found' });
+        }
+
+        return res.status(200).json({
+            message: 'Courses fetched successfully',
+            courses: courses.map(course => ({
+                id : course._id,
+                title: course.title,
+                price: course.price,
+                thumbnail: `${process.env.S3_BASE_URL}${course.thumbnail}`, // Generate the full URL for the thumbnail
+                teacher: {
+                    name: course.teacher.name,
+                    profilePicture: course.teacher.profilePicture,
+                },
+            })),
+        });
+    } catch (err){
+        console.log(err);
+        return res.status(500).json({message:"Server error", error:err.message});
+    }
+}
+
+const getCourseContent = async (req, res) => {
+    const { courseId } = req.params;
+
+    try {
+        // Find the course by its ID and populate the modules
+        const course = await Course.findById(courseId)
+            .populate({
+                path: 'modules', // Populate modules
+                select: 'title videoUrl' // Only select title and videoUrl from the modules
+            });
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Base URL from environment variables (e.g., S3 base URL)
+        const baseUrl = process.env.S3_BASE_URL;
+
+        // Add base URL to each module's video URL
+        const modulesWithVideoUrls = course.modules.map(module => ({
+            _id: module._id,
+            title: module.title,
+            videoUrl: `${baseUrl}${module.videoUrl}` // Append base URL to videoUrl
+        }));
+
+        // Return course title and modules with full video URLs
+        return res.status(200).json({
+            title: course.title,
+            modules: modulesWithVideoUrls
+        });
+    } catch (err) {
+        console.error('Error fetching course content:', err);
+        return res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
+module.exports = { getCourseContent };
+
 
 module.exports = {
     getAllPublishedCourses,
     getCourseOverview,
+    getPurchasedCourses,
+    getCourseContent,
     getInstructorCourses,
     getCourseDetails,
     createCourse,
