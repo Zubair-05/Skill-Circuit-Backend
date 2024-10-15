@@ -58,7 +58,7 @@ const stripeDashboardLink = async (req, res) => {
     }
 }
 
-const stripeWebhooks = async (req, res) => {
+const stripeConnectWebhooks = async (req, res) => {
     const signature = req.headers['stripe-signature'];
     let event;
     console.log(`request body is`, req.body);
@@ -101,5 +101,5 @@ const stripeWebhooks = async (req, res) => {
 module.exports = {
     stripeConnect,
     stripeDashboardLink,
-    stripeWebhooks
+    stripeConnectWebhooks
 }

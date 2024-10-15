@@ -15,6 +15,7 @@ const paymentRoutes = require('./src/routes/paymentRoutes');
 
 const app = express();
 app.use('/webhooks', express.raw({ type: 'application/json' }));
+app.use('/checkout/webhooks', express.raw({ type: 'application/json' }));
 
 app.use(passport.initialize());
 

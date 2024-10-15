@@ -10,5 +10,6 @@ const bodyParser = require('body-parser');
 // Stripe connect
 router.post('/stripe/connect', authenticateToken, paymentController.stripeConnect);
 router.get('/stripe/login/link', authenticateToken, paymentController.stripeDashboardLink);
-router.post('/webhooks', bodyParser.raw({ type: 'application/json' }), paymentController.stripeWebhooks);
+router.post('/webhooks', bodyParser.raw({ type: 'application/json' }), paymentController.stripeConnectWebhooks);
+
 module.exports = router;
