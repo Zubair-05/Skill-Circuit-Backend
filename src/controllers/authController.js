@@ -25,7 +25,7 @@ const createTokenAndSendAsCookie = (user, res) => {
     // Set the token as an HttpOnly cookie
     res.cookie('jwt', token, {
         httpOnly: true,    // Prevents JavaScript access to the cookie
-        secure: process.env.NODE_ENV === 'production',  // Ensures it's sent only over HTTPS in production
+        secure: true,  // Ensures it's sent only over HTTPS in production
         sameSite: 'strict', // Prevents CSRF attacks
         maxAge: 3600000     // 1 hour
     });
