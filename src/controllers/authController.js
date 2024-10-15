@@ -19,13 +19,13 @@ const googleAuthCallback = (req, res) => {
     res.redirect(process.env.REDIRECT_URI);
 };
 
-const createTokenAndSendAsCookie = (user, res) => {
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+const createTokenAndSendAsCookie = (req, res) => {
+    // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Set the token as an HttpOnly cookie
-    res.cookie('jwt', token, {
+    res.cookie('jwt', req.user.token, {
         httpOnly: true,    // Prevents JavaScript access to the cookie
-        secure: false,  // Ensures it's sent only over HTTPS in production
+        secure: true,  // Ensures it's sent only over HTTPS in production
         sameSite: 'strict', // Prevents CSRF attacks
         maxAge: 3600000     // 1 hour
     });
@@ -57,7 +57,7 @@ const signup = async (req, res) => {
 
         await user.save();
 
-        createTokenAndSendAsCookie(user, res);
+        createTokenAndSendAsCookie(req, res);
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'Server error', error: error.message });
