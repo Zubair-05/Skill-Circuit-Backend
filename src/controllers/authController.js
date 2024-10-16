@@ -118,7 +118,7 @@ const logout = (req, res) => {
         // domain: process.env.REDIRECT_URI, // Ensure the domain matches where the cookie is set
         // path: '/', // Use the same path as where the cookie is set
     });
-    res.clearCookie('jwt');
+    // res.clearCookie('jwt');
     return res.status(200).json({ message: 'Logged out' });
 };
 
