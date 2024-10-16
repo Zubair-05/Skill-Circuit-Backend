@@ -111,8 +111,15 @@ const stripeStatus = async (req, res) => {
 }
 
 const logout = (req, res) => {
+    res.clearCookie('jwt', {
+        httpOnly: true,
+        secure: true, // Secure only in production
+        // sameSite: 'None', // Must be 'None' to allow cross-site cookie
+        // domain: process.env.REDIRECT_URI, // Ensure the domain matches where the cookie is set
+        // path: '/', // Use the same path as where the cookie is set
+    });
     res.clearCookie('jwt');
-    res.status(200).send('User is logged out successfully');
+    return res.status(200).json({ message: 'Logged out' });
 };
 
 const profile = (req, res) => {
