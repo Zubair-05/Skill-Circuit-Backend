@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const googleAuth = passport.authenticate('google',
     {
         scope: ['profile', 'email'],
-        // prompt: 'select_account'
+        prompt: 'select_account'
     });
 
 const googleAuthCallback = (req, res) => {
