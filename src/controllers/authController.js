@@ -114,7 +114,7 @@ const logout = (req, res) => {
     res.clearCookie('jwt', {
         httpOnly: true,
         secure: true, // Secure only in production
-        // sameSite: 'None', // Must be 'None' to allow cross-site cookie
+        sameSite: 'None', // Must be 'None' to allow cross-site cookie
         // domain: process.env.REDIRECT_URI, // Ensure the domain matches where the cookie is set
         // path: '/', // Use the same path as where the cookie is set
     });
