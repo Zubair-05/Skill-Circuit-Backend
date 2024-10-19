@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const googleAuth = passport.authenticate('google',
     {
         scope: ['profile', 'email'],
-        // prompt: 'select_account'
+        prompt: 'select_account'
     });
 
 const googleAuthCallback = (req, res) => {
@@ -26,7 +26,7 @@ const createTokenAndSendAsCookie = (user, res) => {
     res.cookie('jwt', token, {
         httpOnly: true,    // Prevents JavaScript access to the cookie
         secure: true,  // Ensures it's sent only over HTTPS in production
-        sameSite: 'strict', // Prevents CSRF attacks
+        sameSite: 'None', // Prevents CSRF attacks
         maxAge: 3600000     // 1 hour
     });
 
@@ -114,7 +114,7 @@ const logout = (req, res) => {
     res.clearCookie('jwt', {
         httpOnly: true,
         secure: true, // Secure only in production
-        // sameSite: 'None', // Must be 'None' to allow cross-site cookie
+        sameSite: 'None', // Must be 'None' to allow cross-site cookie
         // domain: process.env.REDIRECT_URI, // Ensure the domain matches where the cookie is set
         // path: '/', // Use the same path as where the cookie is set
     });
